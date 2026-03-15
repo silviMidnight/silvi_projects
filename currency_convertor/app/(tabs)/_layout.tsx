@@ -1,7 +1,49 @@
+import { useRef, useCallback } from "react";
+import { useColorScheme, Animated, Pressable } from "react-native";
 import { Tabs } from "expo-router";
-import { useColorScheme } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useCurrencyStore } from "@/store/currencyStore";
+
+function AnimatedTabButton(props: any) {
+  const scale = useRef(new Animated.Value(1)).current;
+
+  const onPressIn = useCallback(() => {
+    Animated.spring(scale, {
+      toValue: 0.88,
+      useNativeDriver: true,
+      speed: 50,
+      bounciness: 4,
+    }).start();
+  }, [scale]);
+
+  const onPressOut = useCallback(() => {
+    Animated.spring(scale, {
+      toValue: 1,
+      useNativeDriver: true,
+      speed: 40,
+      bounciness: 4,
+    }).start();
+  }, [scale]);
+
+  return (
+    <Animated.View
+      style={[{ flex: 1, transform: [{ scale }] }, props.style]}
+    >
+      <Pressable
+        onPress={props.onPress}
+        onLongPress={props.onLongPress}
+        onPressIn={onPressIn}
+        onPressOut={onPressOut}
+        accessibilityRole={props.accessibilityRole}
+        accessibilityState={props.accessibilityState}
+        accessibilityLabel={props.accessibilityLabel}
+        style={{ flex: 1, alignItems: "center", justifyContent: "center" }}
+      >
+        {props.children}
+      </Pressable>
+    </Animated.View>
+  );
+}
 
 export default function TabLayout() {
   const theme = useCurrencyStore((s) => s.theme);
@@ -20,6 +62,7 @@ export default function TabLayout() {
         headerShown: false,
         tabBarActiveTintColor: activeTint,
         tabBarInactiveTintColor: inactiveTint,
+        tabBarButton: (props) => <AnimatedTabButton {...props} />,
         tabBarStyle: {
           backgroundColor: tabBarBg,
           borderTopColor: borderColor,

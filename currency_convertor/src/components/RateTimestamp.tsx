@@ -1,7 +1,8 @@
-import { View, Text, Pressable } from "react-native";
+import { View, Text, Pressable, Animated } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { getRelativeTime } from "../utils/formatting";
 import { useTheme } from "../hooks/useTheme";
+import { usePressAnimation } from "../hooks/usePressAnimation";
 
 interface Props {
   fetchedAt: number | null;
@@ -17,6 +18,7 @@ export function RateTimestamp({
   onPress,
 }: Props) {
   const { colors } = useTheme();
+  const anim = usePressAnimation(0.95);
 
   if (!fetchedAt) return null;
 
@@ -36,20 +38,24 @@ export function RateTimestamp({
   }
 
   return (
-    <Pressable
-      onPress={onPress}
-      className="mx-5 mt-3 flex-row items-center justify-center py-2"
-      accessibilityLabel={`Rates updated ${relativeTime}`}
-    >
-      <Ionicons name={statusIcon} size={14} color={statusColor} />
-      <Text className="ml-1.5 text-xs" style={{ color: statusColor }}>
-        Updated {relativeTime}
-      </Text>
-      {isOffline && (
-        <Text className="ml-1 text-xs" style={{ color: statusColor }}>
-          · Offline
+    <Animated.View style={{ transform: [{ scale: anim.scale }] }}>
+      <Pressable
+        onPress={onPress}
+        onPressIn={onPress ? anim.onPressIn : undefined}
+        onPressOut={onPress ? anim.onPressOut : undefined}
+        className="mx-5 mt-3 flex-row items-center justify-center py-2"
+        accessibilityLabel={`Rates updated ${relativeTime}`}
+      >
+        <Ionicons name={statusIcon} size={14} color={statusColor} />
+        <Text className="ml-1.5 text-xs" style={{ color: statusColor }}>
+          Updated {relativeTime}
         </Text>
-      )}
-    </Pressable>
+        {isOffline && (
+          <Text className="ml-1 text-xs" style={{ color: statusColor }}>
+            · Offline
+          </Text>
+        )}
+      </Pressable>
+    </Animated.View>
   );
 }

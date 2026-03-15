@@ -150,7 +150,7 @@ export function CurrencyPairHeader({
             className="ml-1.5 text-xs font-semibold"
             style={{ color: favColor }}
           >
-            {isFavorite ? "Saved" : "Save to favorites"}
+            {isFavorite ? "Saved" : "Add to favorites"}
           </Text>
         </Pressable>
       </Animated.View>

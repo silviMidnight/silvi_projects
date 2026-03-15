@@ -4,6 +4,7 @@ import {
   Text,
   FlatList,
   Pressable,
+  Animated,
   LayoutAnimation,
   UIManager,
   Platform,
@@ -16,6 +17,7 @@ import {
   type TablePage,
 } from "../utils/tableScaling";
 import { useTheme } from "../hooks/useTheme";
+import { usePressAnimation } from "../hooks/usePressAnimation";
 
 if (
   Platform.OS === "android" &&
@@ -72,6 +74,7 @@ function ExpandableRow({
 }) {
   const { colors } = useTheme();
   const [expanded, setExpanded] = useState(false);
+  const rowAnim = usePressAnimation(0.97);
 
   const toggleExpand = useCallback(() => {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
@@ -85,13 +88,16 @@ function ExpandableRow({
 
   return (
     <View>
-      <Pressable
-        onPress={toggleExpand}
-        className="flex-row"
-        style={{
-          backgroundColor: isEven ? colors.surfaceSecondary : "transparent",
-        }}
-      >
+      <Animated.View style={{ transform: [{ scale: rowAnim.scale }] }}>
+        <Pressable
+          onPress={toggleExpand}
+          onPressIn={rowAnim.onPressIn}
+          onPressOut={rowAnim.onPressOut}
+          className="flex-row"
+          style={{
+            backgroundColor: isEven ? colors.surfaceSecondary : "transparent",
+          }}
+        >
         <View className="flex-1 items-end justify-center py-3 pl-2 pr-6">
           <Text
             className={expanded ? "text-2xl font-extrabold" : "text-xl font-bold"}
@@ -115,7 +121,8 @@ function ExpandableRow({
             {convertedValue}
           </Text>
         </View>
-      </Pressable>
+        </Pressable>
+      </Animated.View>
 
       {expanded && (
         <View>
