@@ -6,11 +6,13 @@ import {
   Pressable,
   Switch,
   Modal,
+  Animated,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import { useCurrencyStore } from "@/store/currencyStore";
 import { useTheme } from "@/hooks/useTheme";
+import { usePressAnimation } from "@/hooks/usePressAnimation";
 import { CurrencySelector } from "@/components/CurrencySelector";
 import { getCurrencyInfo } from "@/utils/currencies";
 
@@ -34,29 +36,41 @@ function SettingsRow({
   icon: keyof typeof Ionicons.glyphMap;
 }) {
   const { colors } = useTheme();
+  const anim = usePressAnimation(0.97);
 
   return (
-    <Pressable
-      onPress={onPress}
-      className="flex-row items-center px-5 py-4"
-      disabled={!onPress}
-    >
-      <View
-        className="mr-3 h-9 w-9 items-center justify-center rounded-xl"
-        style={{ backgroundColor: colors.primaryMuted }}
+    <Animated.View style={{ transform: [{ scale: anim.scale }] }}>
+      <Pressable
+        onPress={onPress}
+        onPressIn={onPress ? anim.onPressIn : undefined}
+        onPressOut={onPress ? anim.onPressOut : undefined}
+        className="flex-row items-center px-5 py-4"
+        disabled={!onPress}
       >
-        <Ionicons name={icon} size={18} color={colors.primary} />
-      </View>
-      <Text className="flex-1 text-base" style={{ color: colors.text }}>
-        {label}
-      </Text>
-      <Text className="mr-1 text-sm" style={{ color: colors.textSecondary }}>
-        {value}
-      </Text>
-      {onPress && (
-        <Ionicons name="chevron-forward" size={18} color={colors.textTertiary} />
-      )}
-    </Pressable>
+        <View
+          className="mr-3 h-9 w-9 items-center justify-center rounded-xl"
+          style={{ backgroundColor: colors.primaryMuted }}
+        >
+          <Ionicons name={icon} size={18} color={colors.primary} />
+        </View>
+        <Text className="flex-1 text-base" style={{ color: colors.text }}>
+          {label}
+        </Text>
+        <Text
+          className="mr-1 text-sm"
+          style={{ color: colors.textSecondary }}
+        >
+          {value}
+        </Text>
+        {onPress && (
+          <Ionicons
+            name="chevron-forward"
+            size={18}
+            color={colors.textTertiary}
+          />
+        )}
+      </Pressable>
+    </Animated.View>
   );
 }
 
@@ -101,6 +115,48 @@ function Divider() {
       className="ml-16 h-px"
       style={{ backgroundColor: colors.border }}
     />
+  );
+}
+
+function ThemeOptionRow({
+  option,
+  isSelected,
+  onSelect,
+}: {
+  option: (typeof THEME_OPTIONS)[number];
+  isSelected: boolean;
+  onSelect: () => void;
+}) {
+  const { colors } = useTheme();
+  const anim = usePressAnimation(0.95);
+
+  return (
+    <Animated.View style={{ transform: [{ scale: anim.scale }] }}>
+      <Pressable
+        onPress={onSelect}
+        onPressIn={anim.onPressIn}
+        onPressOut={anim.onPressOut}
+        className="flex-row items-center px-5 py-3.5"
+      >
+        <Ionicons
+          name={option.icon as keyof typeof Ionicons.glyphMap}
+          size={20}
+          color={isSelected ? colors.primary : colors.textSecondary}
+        />
+        <Text
+          className="ml-3 flex-1 text-base"
+          style={{
+            color: isSelected ? colors.primary : colors.text,
+            fontWeight: isSelected ? "600" : "400",
+          }}
+        >
+          {option.label}
+        </Text>
+        {isSelected && (
+          <Ionicons name="checkmark" size={20} color={colors.primary} />
+        )}
+      </Pressable>
+    </Animated.View>
   );
 }
 
@@ -295,41 +351,15 @@ export default function SettingsScreen() {
               </Text>
             </View>
             {THEME_OPTIONS.map((option) => (
-              <Pressable
+              <ThemeOptionRow
                 key={option.value}
-                onPress={() => {
+                option={option}
+                isSelected={theme === option.value}
+                onSelect={() => {
                   setTheme(option.value);
                   setShowThemePicker(false);
                 }}
-                className="flex-row items-center px-5 py-3.5"
-              >
-                <Ionicons
-                  name={option.icon as keyof typeof Ionicons.glyphMap}
-                  size={20}
-                  color={
-                    theme === option.value
-                      ? colors.primary
-                      : colors.textSecondary
-                  }
-                />
-                <Text
-                  className="ml-3 flex-1 text-base"
-                  style={{
-                    color:
-                      theme === option.value ? colors.primary : colors.text,
-                    fontWeight: theme === option.value ? "600" : "400",
-                  }}
-                >
-                  {option.label}
-                </Text>
-                {theme === option.value && (
-                  <Ionicons
-                    name="checkmark"
-                    size={20}
-                    color={colors.primary}
-                  />
-                )}
-              </Pressable>
+              />
             ))}
             <View className="h-3" />
           </View>

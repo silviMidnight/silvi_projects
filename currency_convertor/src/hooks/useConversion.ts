@@ -1,13 +1,10 @@
-import { useMemo } from "react";
 import { useRate } from "./useExchangeRate";
-import { generateTableValues } from "../utils/tableScaling";
 import { formatCurrencyValue } from "../utils/formatting";
 
 interface ConversionResult {
   rate: number | null;
   convertedAmount: number | null;
   formattedAmount: string;
-  tableRows: { baseValue: number; targetValue: string }[];
   isLoading: boolean;
   isError: boolean;
   isStale: boolean;
@@ -38,20 +35,10 @@ export function useConversion(
       ? formatCurrencyValue(convertedAmount, target)
       : "—";
 
-  const tableRows = useMemo(() => {
-    if (rate == null) return [];
-    const values = generateTableValues(rate);
-    return values.map((v) => ({
-      baseValue: v,
-      targetValue: formatCurrencyValue(v * rate, target),
-    }));
-  }, [rate, target]);
-
   return {
     rate,
     convertedAmount,
     formattedAmount,
-    tableRows,
     isLoading,
     isError,
     isStale,

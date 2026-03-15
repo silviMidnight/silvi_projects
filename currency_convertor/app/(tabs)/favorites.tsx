@@ -1,13 +1,30 @@
 import { useCallback } from "react";
-import { View, Text, SectionList, Pressable } from "react-native";
+import {
+  View,
+  Text,
+  SectionList,
+  Pressable,
+  Animated,
+  LayoutAnimation,
+  UIManager,
+  Platform,
+} from "react-native";
 import { useRouter } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import { useCurrencyStore } from "@/store/currencyStore";
 import { useTheme } from "@/hooks/useTheme";
+import { usePressAnimation } from "@/hooks/usePressAnimation";
 import { FavoritePairCard } from "@/components/FavoritePairCard";
 import { EmptyState } from "@/components/EmptyState";
 import type { CurrencyPair } from "@/types";
+
+if (
+  Platform.OS === "android" &&
+  UIManager.setLayoutAnimationEnabledExperimental
+) {
+  UIManager.setLayoutAnimationEnabledExperimental(true);
+}
 
 function RecentPairRow({
   pair,
@@ -17,32 +34,47 @@ function RecentPairRow({
   onPress: () => void;
 }) {
   const { colors } = useTheme();
+  const anim = usePressAnimation(0.97);
 
   return (
-    <Pressable
-      onPress={onPress}
-      className="flex-row items-center px-5 py-3.5"
-      accessibilityLabel={`${pair.base} to ${pair.target}`}
-    >
-      <View
-        className="mr-3 h-8 w-8 items-center justify-center rounded-full"
-        style={{ backgroundColor: colors.surfaceSecondary }}
+    <Animated.View style={{ transform: [{ scale: anim.scale }] }}>
+      <Pressable
+        onPress={onPress}
+        onPressIn={anim.onPressIn}
+        onPressOut={anim.onPressOut}
+        className="flex-row items-center px-5 py-3.5"
+        accessibilityLabel={`${pair.base} to ${pair.target}`}
       >
-        <Ionicons name="time-outline" size={16} color={colors.textTertiary} />
-      </View>
-      <Text className="text-base font-medium" style={{ color: colors.text }}>
-        {pair.base}
-      </Text>
-      <Ionicons
-        name="arrow-forward"
-        size={14}
-        color={colors.textTertiary}
-        style={{ marginHorizontal: 6 }}
-      />
-      <Text className="text-base font-medium" style={{ color: colors.text }}>
-        {pair.target}
-      </Text>
-    </Pressable>
+        <View
+          className="mr-3 h-8 w-8 items-center justify-center rounded-full"
+          style={{ backgroundColor: colors.surfaceSecondary }}
+        >
+          <Ionicons
+            name="time-outline"
+            size={16}
+            color={colors.textTertiary}
+          />
+        </View>
+        <Text
+          className="text-base font-medium"
+          style={{ color: colors.text }}
+        >
+          {pair.base}
+        </Text>
+        <Ionicons
+          name="arrow-forward"
+          size={14}
+          color={colors.textTertiary}
+          style={{ marginHorizontal: 6 }}
+        />
+        <Text
+          className="text-base font-medium"
+          style={{ color: colors.text }}
+        >
+          {pair.target}
+        </Text>
+      </Pressable>
+    </Animated.View>
   );
 }
 
@@ -64,6 +96,14 @@ export default function FavoritesScreen() {
       router.push("/(tabs)");
     },
     [setBaseCurrency, setTargetCurrency, router]
+  );
+
+  const handleRemoveFavorite = useCallback(
+    (pair: CurrencyPair) => {
+      LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+      removeFavorite(pair);
+    },
+    [removeFavorite]
   );
 
   const getRateForPair = (pair: CurrencyPair): number | null => {
@@ -157,7 +197,7 @@ export default function FavoritesScreen() {
                   pair={item.pair}
                   rate={getRateForPair(item.pair)}
                   onPress={() => navigateToPair(item.pair)}
-                  onDelete={() => removeFavorite(item.pair)}
+                  onDelete={() => handleRemoveFavorite(item.pair)}
                 />
               </View>
             );

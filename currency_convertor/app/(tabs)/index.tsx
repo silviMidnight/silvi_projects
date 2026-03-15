@@ -1,6 +1,5 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useMemo } from "react";
 import {
-  View,
   ScrollView,
   KeyboardAvoidingView,
   Platform,
@@ -30,15 +29,23 @@ export default function ConverterScreen() {
   const swapCurrencies = useCurrencyStore((s) => s.swapCurrencies);
   const addFavorite = useCurrencyStore((s) => s.addFavorite);
   const removeFavorite = useCurrencyStore((s) => s.removeFavorite);
-  const isFavorite = useCurrencyStore((s) => s.isFavorite);
+  const favoritePairs = useCurrencyStore((s) => s.favoritePairs);
+
+  const pairIsFavorite = useMemo(
+    () =>
+      favoritePairs.some(
+        (p) => p.base === baseCurrency && p.target === targetCurrency
+      ),
+    [favoritePairs, baseCurrency, targetCurrency]
+  );
 
   const [customAmount, setCustomAmount] = useState("1");
 
   const numericAmount = parseFloat(customAmount) || 0;
 
   const {
+    rate,
     formattedAmount,
-    tableRows,
     isLoading,
     isError,
     isStale,
@@ -46,16 +53,14 @@ export default function ConverterScreen() {
     refetch,
   } = useConversion(baseCurrency, targetCurrency, numericAmount);
 
-  const pair = { base: baseCurrency, target: targetCurrency };
-  const pairIsFavorite = isFavorite(pair);
-
   const handleToggleFavorite = useCallback(() => {
+    const pair = { base: baseCurrency, target: targetCurrency };
     if (pairIsFavorite) {
       removeFavorite(pair);
     } else {
       addFavorite(pair);
     }
-  }, [pairIsFavorite, pair, addFavorite, removeFavorite]);
+  }, [pairIsFavorite, baseCurrency, targetCurrency, addFavorite, removeFavorite]);
 
   const handleBasePress = useCallback(() => {
     router.push({ pathname: "/currency-select", params: { mode: "base" } });
@@ -79,7 +84,7 @@ export default function ConverterScreen() {
     setRefreshing(false);
   }, [refetch]);
 
-  if (isLoading && !tableRows.length) {
+  if (isLoading && rate == null) {
     return (
       <SafeAreaView
         className="flex-1"
@@ -90,7 +95,7 @@ export default function ConverterScreen() {
     );
   }
 
-  if (isError && !tableRows.length) {
+  if (isError && rate == null) {
     return (
       <SafeAreaView
         className="flex-1"
@@ -147,7 +152,7 @@ export default function ConverterScreen() {
           <ConversionTable
             baseCurrency={baseCurrency}
             targetCurrency={targetCurrency}
-            rows={tableRows}
+            rate={rate}
           />
 
           <RateTimestamp
