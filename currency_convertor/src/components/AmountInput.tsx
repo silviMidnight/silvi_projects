@@ -1,3 +1,4 @@
+import { useState, useRef } from "react";
 import { View, Text, TextInput } from "react-native";
 import { getCurrencySymbol } from "../utils/currencies";
 import { useTheme } from "../hooks/useTheme";
@@ -17,23 +18,40 @@ export function AmountInput({
   formattedResult,
   onChange,
 }: Props) {
-  const { colors, isDark } = useTheme();
+  const { colors } = useTheme();
+  const [isFocused, setIsFocused] = useState(false);
+  const inputRef = useRef<TextInput>(null);
 
   return (
     <View
       className="mx-5 rounded-2xl p-3"
-      style={{ backgroundColor: colors.surface }}
+      style={{
+        backgroundColor: colors.surface,
+        borderWidth: isFocused ? 1.5 : 0,
+        borderColor: isFocused ? colors.primary : "transparent",
+      }}
+      onTouchEnd={() => inputRef.current?.focus()}
     >
+      <Text
+        className="font-medium mb-1"
+        style={{ color: colors.textTertiary, fontSize: 14.4 }}
+      >
+        Enter amount
+      </Text>
+
       <View className="flex-row items-center">
         <TextInput
+          ref={inputRef}
           className="flex-1 text-xl font-bold"
           style={{ color: colors.text }}
           value={value}
           onChangeText={onChange}
+          onFocus={() => setIsFocused(true)}
+          onBlur={() => setIsFocused(false)}
           keyboardType="decimal-pad"
-          placeholder="0"
+          placeholder="Type any amount..."
           placeholderTextColor={colors.textTertiary}
-          accessibilityLabel="Enter amount"
+          accessibilityLabel="Enter amount to convert"
           returnKeyType="done"
           selectTextOnFocus
         />

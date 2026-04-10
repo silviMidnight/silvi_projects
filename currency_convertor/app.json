@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "Currency Converter",
+    "name": "GoCurr",
     "slug": "currency-convertor",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -14,7 +14,10 @@
     },
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.currencyconvertor.app"
+      "bundleIdentifier": "com.currencyconvertor.app",
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false
+      }
     },
     "android": {
       "adaptiveIcon": {
@@ -32,6 +35,12 @@
     "plugins": [
       "expo-router",
       "expo-localization"
-    ]
+    ],
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "fc257ef6-2df5-430c-ae5c-bd0128b1ca20"
+      }
+    }
   }
 }
