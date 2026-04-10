@@ -21,12 +21,12 @@ export function AmountInput({
 
   return (
     <View
-      className="mx-5 rounded-2xl p-4"
+      className="mx-5 rounded-2xl p-3"
       style={{ backgroundColor: colors.surface }}
     >
       <View className="flex-row items-center">
         <TextInput
-          className="flex-1 text-2xl font-bold"
+          className="flex-1 text-xl font-bold"
           style={{ color: colors.text }}
           value={value}
           onChangeText={onChange}
@@ -38,7 +38,7 @@ export function AmountInput({
           selectTextOnFocus
         />
         <Text
-          className="ml-2 text-lg font-semibold"
+          className="ml-2 text-base font-semibold"
           style={{ color: colors.textSecondary }}
         >
           {baseCurrency}
@@ -46,22 +46,22 @@ export function AmountInput({
       </View>
 
       <View
-        className="my-3 h-px"
+        className="my-1.5 h-px"
         style={{ backgroundColor: colors.border }}
       />
 
       <View className="flex-row items-baseline">
-        <Text className="text-sm" style={{ color: colors.textSecondary }}>
+        <Text className="text-xs" style={{ color: colors.textSecondary }}>
           {getCurrencySymbol(targetCurrency)}{" "}
         </Text>
         <Text
-          className="text-2xl font-bold"
+          className="text-xl font-bold"
           style={{ color: colors.primary }}
         >
           {formattedResult}
         </Text>
         <Text
-          className="ml-2 text-lg font-semibold"
+          className="ml-2 text-base font-semibold"
           style={{ color: colors.textSecondary }}
         >
           {targetCurrency}

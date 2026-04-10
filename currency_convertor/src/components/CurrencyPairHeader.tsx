@@ -56,13 +56,13 @@ export function CurrencyPairHeader({
   const favBg = isFavorite
     ? isDark
       ? "#78350F"
-      : "#FEF3C7"
+      : "#FEF9E7"
     : colors.surfaceSecondary;
 
   const favColor = isFavorite ? colors.accent : colors.textTertiary;
 
   return (
-    <View className="px-5 pb-4 pt-2">
+    <View className="px-5 pb-2 pt-1">
       <View className="flex-row items-center justify-center">
         <Animated.View
           style={{ flex: 1, transform: [{ scale: baseAnim.scale }] }}
@@ -71,18 +71,18 @@ export function CurrencyPairHeader({
             onPress={onBasePress}
             onPressIn={baseAnim.onPressIn}
             onPressOut={baseAnim.onPressOut}
-            className="items-center rounded-2xl p-3"
+            className="items-center rounded-2xl p-2"
             style={{ backgroundColor: colors.surface }}
             accessibilityLabel={`Base currency: ${baseInfo.name}`}
           >
             <Text
-              className="text-3xl font-bold"
+              className="text-2xl font-bold"
               style={{ color: colors.text }}
             >
               {base}
             </Text>
             <Text
-              className="mt-1 text-xs"
+              className="mt-0.5 text-xs"
               style={{ color: colors.textSecondary }}
               numberOfLines={1}
             >
@@ -100,18 +100,18 @@ export function CurrencyPairHeader({
             onPress={onTargetPress}
             onPressIn={targetAnim.onPressIn}
             onPressOut={targetAnim.onPressOut}
-            className="items-center rounded-2xl p-3"
+            className="items-center rounded-2xl p-2"
             style={{ backgroundColor: colors.surface }}
             accessibilityLabel={`Target currency: ${targetInfo.name}`}
           >
             <Text
-              className="text-3xl font-bold"
+              className="text-2xl font-bold"
               style={{ color: colors.text }}
             >
               {target}
             </Text>
             <Text
-              className="mt-1 text-xs"
+              className="mt-0.5 text-xs"
               style={{ color: colors.textSecondary }}
               numberOfLines={1}
             >
@@ -131,7 +131,7 @@ export function CurrencyPairHeader({
           onPress={handleToggleFavorite}
           onPressIn={favAnim.onPressIn}
           onPressOut={favAnim.onPressOut}
-          className="mt-3 flex-row items-center justify-center rounded-full px-4 py-2"
+          className="mt-1 flex-row items-center justify-center rounded-full px-3 py-1"
           style={{
             backgroundColor: favBg,
             borderWidth: isFavorite ? 1 : 0,
@@ -143,7 +143,7 @@ export function CurrencyPairHeader({
         >
           <Ionicons
             name={isFavorite ? "star" : "star-outline"}
-            size={16}
+            size={14}
             color={favColor}
           />
           <Text

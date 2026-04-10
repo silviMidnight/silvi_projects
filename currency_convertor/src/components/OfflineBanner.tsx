@@ -12,12 +12,12 @@ export function OfflineBanner({ isOffline, lastUpdated }: Props) {
 
   if (!isOffline) return null;
 
-  const bgColor = isDark ? "#78350F" : "#FEF3C7";
+  const bgColor = isDark ? "#78350F" : "#FEF9E7";
   const textColor = isDark ? "#FCD34D" : "#92400E";
 
   return (
     <View
-      className="mx-5 mt-2 flex-row items-center rounded-xl px-4 py-2.5"
+      className="mx-5 mt-1 flex-row items-center rounded-xl px-3 py-1.5"
       style={{ backgroundColor: bgColor }}
     >
       <Ionicons name="cloud-offline" size={16} color={textColor} />

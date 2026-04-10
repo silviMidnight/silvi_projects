@@ -41,12 +41,12 @@ export function SwapButton({ onSwap }: Props) {
         onPress={handleSwap}
         onPressIn={onPressIn}
         onPressOut={onPressOut}
-        className="mx-3 h-10 w-10 items-center justify-center rounded-full"
+        className="mx-2 h-8 w-8 items-center justify-center rounded-full"
         style={{ backgroundColor: colors.primaryMuted }}
         accessibilityLabel="Swap currencies"
         accessibilityRole="button"
       >
-        <Ionicons name="swap-horizontal" size={22} color={colors.primary} />
+        <Ionicons name="swap-horizontal" size={18} color={colors.primary} />
       </Pressable>
     </Animated.View>
   );

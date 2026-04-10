@@ -43,7 +43,7 @@ export function RateTimestamp({
         onPress={onPress}
         onPressIn={onPress ? anim.onPressIn : undefined}
         onPressOut={onPress ? anim.onPressOut : undefined}
-        className="mx-5 mt-3 flex-row items-center justify-center py-2"
+        className="mx-5 mt-1 flex-row items-center justify-center py-1"
         accessibilityLabel={`Rates updated ${relativeTime}`}
       >
         <Ionicons name={statusIcon} size={14} color={statusColor} />

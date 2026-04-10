@@ -52,9 +52,9 @@ export default function TabLayout() {
     theme === "system" ? systemScheme === "dark" : theme === "dark";
 
   const activeTint = isDark ? "#60A5FA" : "#2563EB";
-  const inactiveTint = isDark ? "#64748B" : "#94A3B8";
-  const tabBarBg = isDark ? "#1E293B" : "#FFFFFF";
-  const borderColor = isDark ? "#334155" : "#E2E8F0";
+  const inactiveTint = isDark ? "#64748B" : "#A8A29E";
+  const tabBarBg = isDark ? "#1E293B" : "#FAF9F7";
+  const borderColor = isDark ? "#334155" : "#D6D3CE";
 
   return (
     <Tabs

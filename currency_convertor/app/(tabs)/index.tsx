@@ -1,10 +1,5 @@
 import { useState, useCallback, useMemo } from "react";
-import {
-  ScrollView,
-  KeyboardAvoidingView,
-  Platform,
-  RefreshControl,
-} from "react-native";
+import { View } from "react-native";
 import { useRouter } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useCurrencyStore } from "@/store/currencyStore";
@@ -77,13 +72,6 @@ export default function ConverterScreen() {
     });
   }, [router, baseCurrency, targetCurrency]);
 
-  const [refreshing, setRefreshing] = useState(false);
-  const handleRefresh = useCallback(async () => {
-    setRefreshing(true);
-    await refetch();
-    setRefreshing(false);
-  }, [refetch]);
-
   if (isLoading && rate == null) {
     return (
       <SafeAreaView
@@ -112,23 +100,7 @@ export default function ConverterScreen() {
       style={{ backgroundColor: colors.background }}
       edges={["top"]}
     >
-      <KeyboardAvoidingView
-        className="flex-1"
-        behavior={Platform.OS === "ios" ? "padding" : undefined}
-      >
-        <ScrollView
-          className="flex-1"
-          contentContainerClassName="pb-6"
-          showsVerticalScrollIndicator={false}
-          keyboardShouldPersistTaps="handled"
-          refreshControl={
-            <RefreshControl
-              refreshing={refreshing}
-              onRefresh={handleRefresh}
-              tintColor={colors.primary}
-            />
-          }
-        >
+        <View className="flex-1">
           <OfflineBanner isOffline={!isConnected} lastUpdated={fetchedAt} />
 
           <CurrencyPairHeader
@@ -161,8 +133,7 @@ export default function ConverterScreen() {
             isOffline={!isConnected}
             onPress={handleRatePress}
           />
-        </ScrollView>
-      </KeyboardAvoidingView>
+        </View>
     </SafeAreaView>
   );
 }
